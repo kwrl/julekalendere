@@ -91,7 +91,7 @@ public class Task4 {
 					newString+='a';
 					continue;
 				} 
-				if(c == '-') {
+				if(c == '-' || c == ' ') {
 					newString += ' ';
 					continue;
 				}
