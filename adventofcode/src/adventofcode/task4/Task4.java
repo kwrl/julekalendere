@@ -22,35 +22,33 @@ public class Task4 {
 	}
 	
 	class EncryptedRoom {
-		private final String content; 
 		private final String name, checksum;
 		private final int sectorID;
 		
 		public EncryptedRoom(String content) {
-			this.content = content;
-			this.checksum = getChecksum(content);
-			this.sectorID = getSectorID(content);
-			this.name = getName(content);
+			this.checksum = parseChecksum(content);
+			this.sectorID = parseSectorID(content);
+			this.name = parseName(content);
 		}
 		
-		private String getName(String str) {
+		private String parseName(String str) {
 			int stop = str.indexOf("[") - 4;
 			return str.substring(0, stop);
 		}
 		
-		private String getChecksum(String str) {
+		private String parseChecksum(String str) {
 			int start = str.indexOf("[") +1;
 			int stop = str.length()-1;
 			return str.substring(start, stop);
 		}
 		
-		private int getSectorID(String str) {
+		private int parseSectorID(String str) {
 			int stop = str.indexOf("[");
 			int start = stop -3; 
 			return Integer.parseInt(str.substring(start, stop));
 		}
 		
-		private String createChecksum(String str) {
+		private String generateChecksum(String str) {
 			String candidate = str.replace("-", "");
 			Map<Character, Integer> occurrences = new HashMap<>();
 			for(char c : candidate.toCharArray()) {
@@ -79,11 +77,11 @@ public class Task4 {
 		}
 		
 		public String getDecryptedName() {
-			String encrypted = name;
+			String decrypted = name;
 			for(int i = 0; i < getSectorID(); i++) {
-				encrypted = rotate(encrypted);
+				decrypted = rotate(decrypted);
 			}
-			return encrypted;
+			return decrypted;
 		}
 		
 		private String rotate(String str) {
@@ -94,10 +92,6 @@ public class Task4 {
 					continue;
 				} 
 				if(c == '-') {
-					newString+=' ';
-					continue;
-				}
-				if(c == ' ') {
 					newString += ' ';
 					continue;
 				}
@@ -108,7 +102,7 @@ public class Task4 {
 		}
 		
 		public boolean isValid() {
-			return createChecksum(name).equals(checksum);
+			return generateChecksum(name).equals(checksum);
 		}
 		
 		public int getSectorID() {
